@@ -363,3 +363,25 @@ function getReceiverConfig(name, receivers) {
     return e.name == name;
   });
 }
+function getConfigFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get("config");
+  if (!encoded) return null;
+
+  try {
+    return atob(encoded);
+    catch (e) {
+      console.error("Invalid config encoding", e);
+      return null;
+    }
+  }
+}
+
+window.addEventListener("DOMContentLoader", () => {
+    const textarea = document.getElementById("config");
+    const config = getConfigFromUrl();
+
+    if (config) {
+        textarea.value = config;
+    }
+});
