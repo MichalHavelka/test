@@ -49,20 +49,23 @@ function resetSVG() {
 window.addEventListener('DOMContentLoaded', () => {
     const yamlTextArea = document.getElementById('config');
     const urlParams = new URLSearchParams(window.location.search);
-    
-    // We'll use the key 'config' in the URL
-    const encodedConfig = urlParams.get('config');
+    const compressedConfig = urlParams.get('config');
 
-    if (encodedConfig) {
+    if (compressedConfig) {
         try {
-            // Decode the Base64 string back to YAML
-            const decodedYaml = atob(encodedConfig);
-            yamlTextArea.value = decodedYaml;
+            // 1. Convert Base64 string to a binary array (Uint8Array)
+            const binaryString = atob(compressedConfig);
+            const charData = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+
+            // 2. Decompress the data using pako
+            const decompressedData = pako.inflate(charData, { to: 'string' });
+
+            // 3. Populate the textarea
+            yamlTextArea.value = decompressedData;
             
-            // Optional: Automatically trigger your validation function here
-            // validateYaml(); 
         } catch (e) {
-            console.error("Failed to decode YAML from URL", e);
+            console.error("Compression Error:", e);
+            alert("Failed to decompress the configuration link.");
         }
     }
 });
