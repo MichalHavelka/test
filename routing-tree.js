@@ -370,10 +370,9 @@ function getConfigFromUrl() {
 
   try {
     return atob(encoded);
-    catch (e) {
-      console.error("Invalid config encoding", e);
-      return null;
-    }
+  } catch (e) {
+    console.error("Invalid config encoding", e);
+    return null;
   }
 }
 
