@@ -46,6 +46,27 @@ function resetSVG() {
     .attr("transform", "translate(" + diameter / 2 + "," + (diameter / 2) + ")");
 }
 
+window.addEventListener('DOMContentLoaded', () => {
+    const yamlTextArea = document.getElementById('config');
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // We'll use the key 'config' in the URL
+    const encodedConfig = urlParams.get('config');
+
+    if (encodedConfig) {
+        try {
+            // Decode the Base64 string back to YAML
+            const decodedYaml = atob(encodedConfig);
+            yamlTextArea.value = decodedYaml;
+            
+            // Optional: Automatically trigger your validation function here
+            // validateYaml(); 
+        } catch (e) {
+            console.error("Failed to decode YAML from URL", e);
+        }
+    }
+});
+
 // Click handler for reading config.yml
 d3.select(".js-parse-and-draw").on("click", function() {
   var config = document.querySelector(".js-config-yml").value;
@@ -363,24 +384,3 @@ function getReceiverConfig(name, receivers) {
     return e.name == name;
   });
 }
-function getConfigFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const encoded = params.get("config");
-  if (!encoded) return null;
-
-  try {
-    return atob(encoded);
-  } catch (e) {
-    console.error("Invalid config encoding", e);
-    return null;
-  }
-}
-
-window.addEventListener("DOMContentLoader", () => {
-    const textarea = document.getElementById("config");
-    const config = getConfigFromUrl();
-
-    if (config) {
-        textarea.value = config;
-    }
-});
