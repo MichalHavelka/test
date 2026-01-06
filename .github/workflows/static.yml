@@ -20,14 +20,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: owner/other-repo
-          path: other-repo
+          repository: https://github.com/prometheus/docs.git
+          path: docs
           fetch-depth: 1
           sparse-checkout: |
             public/webtools/
           sparse-checkout-cone-mode: false
       - name: rename html to index
         run: mv routing-tree-editor.html index.html
+      - name: test123
+        run: ls -al
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
