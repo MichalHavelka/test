@@ -48,19 +48,22 @@ function resetSVG() {
 
 window.addEventListener('DOMContentLoaded', () => {
     const yamlTextArea = document.getElementById('config');
+    if (!yamlTeaxtArea) {
+        console.warn("textarea with id #config not found");
+        return
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const compressedConfig = urlParams.get('config');
 
     if (compressedConfig) {
         try {
-            // 1. Convert Base64 string to a binary array (Uint8Array)
+            if (typeof pako === 'undefined') throw new Error("pako library not loaded, verify the cloudflare cdn")
+            // 1. Convert Base64 string to a binary
             const binaryString = atob(compressedConfig);
             const charData = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-
-            // 2. Decompress the data using pako
+            // 2. Decompress the data with pako
             const decompressedData = pako.inflate(charData, { to: 'string' });
 
-            // 3. Populate the textarea
             yamlTextArea.value = decompressedData;
             
         } catch (e) {
