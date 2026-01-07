@@ -73,7 +73,7 @@ window.addEventListener('DOMContentLoaded', () => {
       try {
         if (typeof pako === 'undefined') throw new Error("pako library not loaded, verify the cloudflare cdn")
         // Decode URL encoding and normalize base64url if needed
-        const decoded = decodeURIComponent(rawParam);
+        const decoded = decodeURIComponent(compressedConfig);
         const stdBase64 = normalizeBase64(decoded);
         const compressedBytes = base64ToUint8Array(stdBase64);
         const decompressed = pako.inflate(compressedBytes, { to: 'string' });
