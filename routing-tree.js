@@ -48,28 +48,41 @@ function resetSVG() {
 
 window.addEventListener('DOMContentLoaded', () => {
     const yamlTextArea = document.getElementById('config');
-    if (!yamlTeaxtArea) {
+    if (!yamlTextArea) {
         console.warn("textarea with id #config not found");
-        return
+        return;
     }
     const urlParams = new URLSearchParams(window.location.search);
     const compressedConfig = urlParams.get('config');
 
-    if (compressedConfig) {
-        try {
-            if (typeof pako === 'undefined') throw new Error("pako library not loaded, verify the cloudflare cdn")
-            // 1. Convert Base64 string to a binary
-            const binaryString = atob(compressedConfig);
-            const charData = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-            // 2. Decompress the data with pako
-            const decompressedData = pako.inflate(charData, { to: 'string' });
-
-            yamlTextArea.value = decompressedData;
-            
-        } catch (e) {
-            console.error("Compression Error:", e);
-            alert("Failed to decompress the configuration link.");
+    function normalizeBase64(b64url) {
+      let b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = b64.length % 4;
+      if (pad) b64 += '='.repeat(4 - pad);
+      return b64;
+    }
+    function base64ToUint8Array(base64) {
+      try {
+        const binary = atob(base64);
+        return Uint8Array.from(binary, c => c.charCodeAt(0));
+      } catch (err) {
+        throw new Error("Invalid base64 data");
         }
+    }
+    if (compressedConfig) {
+      try {
+        if (typeof pako === 'undefined') throw new Error("pako library not loaded, verify the cloudflare cdn")
+        // Decode URL encoding and normalize base64url if needed
+        const decoded = decodeURIComponent(rawParam);
+        const stdBase64 = normalizeBase64(decoded);
+        const compressedBytes = base64ToUint8Array(stdBase64);
+        const decompressed = pako.inflate(compressedBytes, { to: 'string' });
+
+        yamlTextArea.value = decompressed;
+      } catch (e) {
+        console.error("Failed to load config from URL:", e);
+        alert("Failed to decompress the configuration link: " + e.message);
+      }
     }
 });
 
