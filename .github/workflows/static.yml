@@ -5,6 +5,7 @@ on:
       - configs/cfg2
       - configs/cfg2
       - configs/cfg2
+      - README.MD
   workflow_dispatch:
 permissions:
   actions: read
