@@ -6,3 +6,4 @@ config:
         banger: test2
         banger: test3
         banger: test4
+        banger: test5
