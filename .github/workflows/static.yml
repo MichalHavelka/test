@@ -4,7 +4,7 @@ on:
     paths:
       - configs/cfg2
       - configs/cfg2
-      - configs/cfg2
+      - configs/test.yaml
       - README.MD
   workflow_dispatch:
 permissions:
@@ -21,7 +21,20 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-      - env:
+      - name: "checkout branch"
+        uses: actions/checkout@v4
+
+      - name: "setup env"
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install qpdf
+
+      - name: "compress yaml config"
+        run: |
+          COMPRESSED_DATA=$(yq '.config | {"route": .route }' test.yaml \
+          | zlib-flate -compress | base64 -w 0 | tr '+/' '-_' | jq -sRr @uri)
+      - name: "send PR comment"
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           URL: ${{ github.event.pull_request.comments_url }}
         run: |
@@ -32,7 +45,7 @@ jobs:
           -H "Authorization: Bearer $GH_TOKEN" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           $URL \
-          -d '{"body": "prefilled AM routing tree editor: [test](https://google.com) "}'
+          -d '{"body": "prefilled AM routing tree editor: [test](https://michalhavelka.github.io/test/routing-tree-editor.html?config=$COMPRESSED_DATA) "}'
   # deploy:
   #   environment:
   #     name: github-pages
