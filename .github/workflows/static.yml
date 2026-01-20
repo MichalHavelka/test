@@ -29,16 +29,13 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install qpdf
 
-      - name: "compress yaml config"
-        run: |
-          COMPRESSED_DATA=$(yq '.config | {"route": .route }' test.yaml \
-          | zlib-flate -compress | base64 -w 0 | tr '+/' '-_' | jq -sRr @uri)
       - name: "send PR comment"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           URL: ${{ github.event.pull_request.comments_url }}
         run: |
-          echo $URL && \
+          COMPRESSED_DATA=$(yq '.config | {"route": .route }' test.yaml \
+          | zlib-flate -compress | base64 -w 0 | tr '+/' '-_' | jq -sRr @uri) && \
           curl -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
