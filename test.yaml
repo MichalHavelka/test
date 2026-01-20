@@ -1,0 +1,5 @@
+config:
+  route:
+    routes:
+      - test:
+        banger: test1
