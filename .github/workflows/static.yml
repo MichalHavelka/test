@@ -45,7 +45,7 @@ jobs:
           -H "Authorization: Bearer $GH_TOKEN" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           $URL \
-          -d '{"body": "prefilled AM routing tree editor: [test](https://michalhavelka.github.io/test/routing-tree-editor.html?config=$COMPRESSED_DATA) "}'
+          -d '{"body": "'"prefilled AM routing tree editor: [test](https://michalhavelka.github.io/test/routing-tree-editor.html?config=$COMPRESSED_DATA) "'"}'
   # deploy:
   #   environment:
   #     name: github-pages
