@@ -3,3 +3,4 @@ config:
     routes:
       - test:
         banger: test1
+        banger: test2
