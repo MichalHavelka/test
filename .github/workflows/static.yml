@@ -4,7 +4,7 @@ on:
     paths:
       - configs/cfg2
       - configs/cfg2
-      - configs/test.yaml
+      - test.yaml
       - README.MD
   workflow_dispatch:
 permissions:
